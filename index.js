@@ -32,8 +32,11 @@ class Sprite {
     update() {
         /*this is where we update properties to be animated*/
         this.draw()
-        this.position.y += this.velocity.y
 
+       
+        this.position.x += this.velocity.x
+        this.position.y += this.velocity.y
+    
         if(this.position.y + this.height + this.velocity.y >= canvas.height) {
             this.velocity.y = 0
         } else  this.velocity.y += gravity
@@ -47,7 +50,7 @@ const player = new Sprite({
     y:0
 },
 velocity: { /*needs x & y proprety so that sprite can move left right up down*/
-    X:0,
+    x:0,
     y:0 /*makes sure default status is not player moving*/
 }
 })
@@ -58,7 +61,7 @@ const enemy = new Sprite({
         y: 100
     },
     velocity: { /*needs x & y proprety so that sprite can move left right up down*/
-        X:0,
+        x:0,
         y:0 /*makes sure default status is not player moving*/
     }
 })
@@ -69,6 +72,15 @@ console.log(player);
 
 /*animation loop, creates infinite loop to be called so we can animate frame by frame*/
 
+const keys = {
+    /**declares all the keys we want to use in our game */
+    a: {
+        pressed: false
+    },
+    d:{
+        pressed: false
+    }
+}
 function animate() {
     window.requestAnimationFrame(animate)
     /*console.log('go');*/
@@ -76,6 +88,39 @@ function animate() {
     c.fillRect(0, 0, canvas.width, canvas.height) /*need to clear canvas for every loop to avoid paint like affect when looping in animation*/
     player.update()
     enemy.update()
+
+    player.velocity.x = 0
+    if(keys.a.pressed) {
+        player.velocity.x = -1
+    } else if (keys.d.pressed) {
+        player.velocity.x = 1
+    }
 }
 
 animate()
+
+/**code that listens for specific event to react to */
+window.addEventListener('keydown', (event) => {
+    switch(event.key) {
+        case 'd':
+        keys.d.pressed = true
+        break
+        case 'a':
+        keys.a.pressed = true
+        break
+    }
+    console.log(event.key);
+}
+)
+window.addEventListener('keyup', (event) => {
+    switch(event.key) {
+        case 'd':
+        keys.d.pressed = false
+        break
+        case 'a':
+        keys.a.pressed = false
+        break
+    }
+    console.log(event.key);
+}
+)
